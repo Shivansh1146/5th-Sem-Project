@@ -1,408 +1,288 @@
-﻿# AcadIQ — RAG-Based Academic Query Assistant
+# AcadIQ — RAG-Based Academic Query Assistant
 
-> **Phase 1 — Frontend Only.** A fully functional React frontend with a mock API layer. The backend (RAG pipeline, vector DB, FastAPI) is Phase 2 and can be plugged in by toggling a single env variable.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/Vite-8-646cff?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/TypeScript-6.0-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4" />
+  <img src="https://img.shields.io/badge/Theme-ChatGPT_Monochrome-000000?style=for-the-badge&logo=openai&logoColor=white" alt="ChatGPT Theme" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
+</p>
 
----
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Tech Stack](#tech-stack)
-3. [Quick Start](#quick-start)
-4. [Environment Variables](#environment-variables)
-5. [Folder Structure](#folder-structure)
-6. [Routes & Role Guards](#routes--role-guards)
-7. [Features](#features)
-8. [Mock vs. Real API](#mock-vs-real-api)
-9. [API Contract (Phase 2)](#api-contract-phase-2)
-10. [TypeScript Types](#typescript-types)
-11. [Design System](#design-system)
+> **Phase 1 — Complete Frontend & Mock API Engine.**  
+> A high-performance, university knowledge assistant built with React 19, TypeScript, and a ChatGPT-inspired monochromatic design system. Designed to plug directly into a Phase 2 Retrieval-Augmented Generation (RAG) backend via a single environment variable toggle.
 
 ---
 
-## Overview
+## 📌 Table of Contents
 
-**AcadIQ** lets university students ask natural-language questions about:
-- Syllabus, exam rules, circulars
-- Fee schedules, hostel policies, placement policies
-- Scholarship & library guidelines
-
-The system returns answers **with source citations** (document name, page, relevance %) retrieved from a RAG backend (Phase 2). Admins upload/manage university PDFs and monitor usage analytics.
-
----
-
-## Tech Stack
-
-| Category | Library / Tool |
-|---|---|
-| Framework | React 19 + Vite 8 |
-| Language | TypeScript 6 |
-| Styling | Tailwind CSS v4 |
-| UI Primitives | Radix UI |
-| Icons | lucide-react |
-| Routing | React Router v7 |
-| State | Zustand v5 |
-| Data Fetching | TanStack Query v5 |
-| Forms | react-hook-form + zod |
-| Markdown | react-markdown + remark-gfm |
-| Charts | Recharts |
-| Animations | Framer Motion |
-| File Upload | react-dropzone |
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Architecture & Data Flow](#-architecture--data-flow)
+- [Design System (ChatGPT Black & White)](#-design-system-chatgpt-black--white)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Role-Based Access Control (RBAC)](#-role-based-access-control-rbac)
+- [Folder Structure](#-folder-structure)
+- [Mock vs. Real Backend API Integration](#-mock-vs-real-backend-api-integration)
+- [API Contract Specification (Phase 2 Backend)](#-api-contract-specification-phase-2-backend)
+- [Contributing & License](#-contributing--license)
 
 ---
 
-## Quick Start
+## 🌟 Overview
 
-```bash
-# 1. Install dependencies
-npm install
+**AcadIQ** solves the information discovery challenge in universities by allowing students and faculty to ask natural-language questions about institutional regulations:
+- **Academics**: Syllabus, examination regulations, grading systems, attendance rules.
+- **Administrative**: Fee schedules, scholarship criteria, refund policies.
+- **Campus Life**: Hostel rules, anti-ragging policies, library guidelines.
+- **Career**: Placement rules, internship criteria, company drive guidelines.
 
-# 2. .env is already included with VITE_USE_MOCK=true
-
-# 3. Start development server
-npm run dev
-
-# App runs at http://localhost:5173
-```
-
-### Demo Credentials
-
-| Role | How to Login |
-|---|---|
-| **Student** | Any email + any password, select "Student" |
-| **Admin** | Any email + any password, select "Admin" |
-
-> In mock mode, credentials are not validated. The role picker determines access level.
+The assistant returns responses **with verifiable source citations** (document name, page number, confidence rating, and matched snippets) retrieved from institutional documents. Administrators have a dedicated dashboard to upload documents, manage vector indexing, and analyze query analytics.
 
 ---
 
-## Environment Variables
+## ✨ Key Features
 
-```env
-# .env
-VITE_USE_MOCK=true                              # true = mock data, false = real backend
-VITE_API_BASE_URL=http://localhost:8000/api/v1  # Phase 2 backend base URL
-```
+### 1. 💬 ChatGPT-Style Academic Chat
+- **Monochromatic Interface**: High-contrast, distraction-free conversational canvas with clean typography and rounded input cards.
+- **Simulated Streaming**: Real-time word-by-word streaming animation simulating LLM output.
+- **Source Citations**: Interactive source chips under each response showing document name, page number, and similarity score.
+- **Source Inspection Drawer**: Clicking a citation slides out a document viewer panel with highlighted text excerpts.
+- **Confidence Metrics**: High / Medium / Low confidence badges for academic reliability.
+- **Rich Markdown Formatting**: Supports formatted code snippets, bold academic notices, structured tables, and blockquotes.
+- **Feedback & Regeneration**: Copy to clipboard, regeneration, and thumbs-up / thumbs-down ratings.
+- **Conversation Management**: Searchable chat history, new chat creation, title editing, and deletion.
+- **Query Filtering**: Granular filtering by category (Syllabus, Exam Rules, Fees), department, and semester.
 
-**Phase 2 switch:** Set `VITE_USE_MOCK=false`. Zero UI changes required.
+### 2. 📂 Document Management Center (Admin)
+- **Drag-and-Drop Uploader**: Supports PDF, DOCX, and TXT files up to 50MB with animated upload progression.
+- **Metadata Tagging**: Associate uploads with categories, departments, and semesters.
+- **Document Index Table**: Search, filter by status (`indexed`, `processing`, `failed`), sort by file size or date, and pagination.
+- **Document Operations**: One-click re-indexing trigger and secure document deletion modal.
+
+### 3. 📊 Analytics & Insights Dashboard (Admin)
+- **KPI Metrics**: Total Queries, Active Users, Indexed Documents, Average Response Time, and Student Satisfaction Rate with weekly trend indicators.
+- **Visual Analytics (Recharts)**:
+  - *Queries Over Time*: Interactive line chart showing daily query volume vs. unique users.
+  - *Feedback Distribution*: Radial pie breakdown of student ratings.
+  - *Queries by Category*: Horizontal bar chart highlighting popular query topics.
+- **Quality Assurance**: Lists top asked queries and low-confidence queries needing administrative documentation review.
+
+### 4. 🌗 ChatGPT Black & White Aesthetic
+- Full support for **Light**, **Dark**, and **System** themes.
+- Re-mapped to authentic ChatGPT dark charcoal (`#212121`), sidebar charcoal (`#171717`), and crisp white/black primary accents.
 
 ---
 
-## Folder Structure
+## 📐 Architecture & Data Flow
 
-```
-src/
-├── components/
-│   ├── common/
-│   │   ├── ErrorBoundary.tsx     # Global error boundary + inline error state
-│   │   ├── ThemeProvider.tsx     # Applies dark/light/system class to <html>
-│   │   └── Toast.tsx             # Toast notification system (context + hook)
-│   └── ui/
-│       ├── Badge.tsx             # Status / confidence badges
-│       ├── Button.tsx            # Variant button (primary, secondary, outline, danger)
-│       ├── Dialog.tsx            # Modal dialog (Radix Dialog wrapper)
-│       ├── Input.tsx             # Labelled text input with error display
-│       ├── Select.tsx            # Radix Select wrapper
-│       ├── Skeleton.tsx          # Loading skeleton variants
-│       └── Tooltip.tsx           # Radix Tooltip wrapper
-│
-├── features/
-│   ├── auth/
-│   │   └── ProtectedRoute.tsx    # ProtectedRoute + GuestRoute + role guard
-│   ├── chat/
-│   │   ├── ChatSidebar.tsx       # History list, search, new chat, rename/delete
-│   │   ├── CitationChip.tsx      # Source citation badge on assistant messages
-│   │   ├── InputBar.tsx          # Auto-resize textarea, Enter/Shift+Enter, filters
-│   │   ├── MessageBubble.tsx     # User + assistant bubbles, markdown, feedback
-│   │   ├── SourcePanel.tsx       # Right panel with highlighted citation snippet
-│   │   └── SuggestedQuestions.tsx# Empty-state question cards
-│   └── documents/
-│       └── DropZone.tsx          # Drag-and-drop upload with per-file progress
-│
-├── layouts/
-│   ├── AppLayout.tsx             # Sidebar + mobile drawer + main outlet
-│   └── AuthLayout.tsx            # Split-panel auth wrapper
-│
-├── lib/
-│   ├── constants.ts              # ROUTES, CATEGORIES, DEPARTMENTS, SEMESTERS
-│   └── utils.ts                  # cn(), generateId(), formatBytes(), formatDate()
-│
-├── mocks/
-│   └── data.ts                   # Realistic mock: users, chats, documents, analytics
-│
-├── pages/
-│   ├── LandingPage.tsx
-│   ├── LoginPage.tsx
-│   ├── SignupPage.tsx
-│   ├── ChatPage.tsx              # Main chat UI (most important page)
-│   ├── DocumentsPage.tsx         # Admin document management
-│   ├── AnalyticsPage.tsx         # Admin analytics dashboard
-│   ├── SettingsPage.tsx
-│   └── NotFoundPage.tsx
-│
-├── services/
-│   └── api.ts                    # All API calls (mock + real, flag-switched)
-│
-├── store/
-│   └── index.ts                  # useAuthStore, useThemeStore, useChatStore
-│
-├── types/
-│   └── index.ts                  # All TypeScript interfaces
-│
-├── App.tsx
-├── main.tsx
-└── index.css                     # Design tokens + Tailwind base + prose styles
+```mermaid
+graph TD
+    A[Student / Admin User] -->|Natural Language Query| B[AcadIQ UI Component Layer]
+    B --> C[State Management - Zustand]
+    B --> D[Query / Cache Layer - TanStack Query]
+    D --> E[API Service Layer: src/services/api.ts]
+    
+    E -->|VITE_USE_MOCK=true| F[Realistic Mock Simulation Engine]
+    F -->|Simulated Latency & Citations| B
+    
+    E -->|VITE_USE_MOCK=false| G[FastAPI / RAG Vector Backend]
+    G --> H[LangChain / LlamaIndex Pipeline]
+    H --> I[(Vector Database / Qdrant / Pinecone)]
+    G -->|Answer + Citations + Confidence| D
 ```
 
 ---
 
-## Routes & Role Guards
+## 🎨 Design System (ChatGPT Black & White)
 
-| Path | Component | Guard |
+AcadIQ follows OpenAI's signature design principles:
+
+| Element | Light Mode | Dark Mode |
 |---|---|---|
-| `/` | LandingPage | Public |
-| `/login` | LoginPage | Guest only |
-| `/signup` | SignupPage | Guest only |
-| `/chat` | ChatPage | Auth required |
-| `/chat/:id` | ChatPage | Auth required |
-| `/settings` | SettingsPage | Auth required |
-| `/admin/documents` | DocumentsPage | Auth + admin role |
-| `/admin/analytics` | AnalyticsPage | Auth + admin role |
-| `*` | NotFoundPage | Public |
+| **App Canvas** | `#ffffff` (Pure White) | `#212121` (Signature Charcoal) |
+| **Sidebar / Cards** | `#f9f9f9` (Off-white) | `#171717` (Deep Neutral) |
+| **User Message Bubble** | `#f4f4f4` (Light Gray) | `#2f2f2f` (Elevated Charcoal) |
+| **Primary Buttons** | `#0d0d0d` (Solid Black) | `#ffffff` (Solid White) |
+| **Borders** | `#e5e5e5` (Soft Gray) | `#303030` (Subtle Dark Border) |
+| **Text Primary** | `#0d0d0d` (Rich Black) | `#ececec` (High Contrast White) |
+| **Text Muted** | `#8e8e8e` (Medium Gray) | `#737373` (Muted Gray) |
+| **Typography** | `Inter`, system-ui, sans-serif | `Inter`, system-ui, sans-serif |
 
 ---
 
-## Features
+## 💻 Tech Stack
 
-### Chat Page (Core Feature)
-- ChatGPT-style layout: sidebar | message area | source panel
-- Streaming-simulation typing effect for AI responses
-- Source citation chips (document name, page, relevance %)
-- Click citation → right panel with highlighted snippet
-- Thumbs up/down feedback, copy, regenerate on every answer
-- Category / department / semester filters in input bar
-- Suggested questions on empty state
-- High / Medium / Low confidence indicator per answer
-- Markdown rendering: headings, tables, code blocks, blockquotes
-- Sidebar: search, new chat, rename, delete
-
-### Document Management (Admin)
-- Drag-and-drop upload (PDF, DOCX, TXT) with per-file progress bar
-- Sortable, filterable, paginated table
-- Row actions: view, re-index, delete (confirm dialog)
-- Toast notifications for all mutations
-
-### Analytics Dashboard (Admin)
-- 5 KPI cards with trend arrows
-- Line chart: queries over time
-- Bar chart: queries by category
-- Pie chart: feedback distribution
-- Top questions + low-confidence questions tables
-
-### Auth
-- Email + password + role picker
-- react-hook-form + zod validation
-- JWT persisted in localStorage via Zustand
-
-### Settings
-- Profile editing, theme toggle (Light/Dark/System)
-- Clear history, sign out
+- **Core**: React 19, TypeScript 6, Vite 8
+- **Styling**: Tailwind CSS v4, Vanilla CSS Design Tokens
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Primitives**: Radix UI (Dropdown Menu, Dialog, Tooltip)
+- **State Management**: [Zustand v5](https://github.com/pmndrs/zustand)
+- **Data Fetching**: [TanStack Query v5](https://tanstack.com/query)
+- **Charts**: [Recharts](https://recharts.org/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Form Handling**: React Hook Form + Zod
+- **Markdown**: `react-markdown` + `remark-gfm`
+- **File Uploading**: `react-dropzone`
 
 ---
 
-## Mock vs. Real API
+## 🚀 Getting Started
 
-Each function in `src/services/api.ts` branches on `VITE_USE_MOCK`:
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm, yarn, or pnpm
 
-```ts
-export async function sendQuery(chatId, query, filters) {
-  if (USE_MOCK) {
-    await sleep(1200);
-    return generateMockResponse();
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Shivansh1146/5th-Sem-Project.git
+   cd 5th-Sem-Project
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables:**
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Start the local development server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+5. **Type checking:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 🔑 Role-Based Access Control (RBAC)
+
+The application includes built-in role simulation. On the **Login** and **Sign Up** pages, select your role:
+
+| Role | Access Level | Available Routes |
+|---|---|---|
+| **Student** | Academic query access, citation reading, feedback | `/`, `/chat`, `/chat/:id`, `/settings` |
+| **Admin** | Full student capabilities + document indexing & system analytics | `/`, `/chat`, `/chat/:id`, `/settings`, `/admin/documents`, `/admin/analytics` |
+
+> *Note: In mock mode, entering any valid format email/password will authenticate successfully with the selected role.*
+
+---
+
+## 📁 Folder Structure
+
+```
+5th-Sem-Project/
+├── public/                 # Static assets & favicons
+├── src/
+│   ├── components/         # Reusable design system components
+│   │   ├── common/         # ThemeProvider, ErrorBoundary, Toast
+│   │   └── ui/             # Button, Input, Badge, Dialog, Skeleton, Tooltip
+│   ├── features/           # Feature-specific modules
+│   │   ├── auth/           # ProtectedRoute, role authorization guards
+│   │   ├── chat/           # MessageBubble, InputBar, CitationChip, SourcePanel, Sidebar
+│   │   └── documents/      # DropZone, Document table row actions
+│   ├── layouts/            # AppLayout (Sidebar + Main) & AuthLayout
+│   ├── lib/                # Constants, helpers, utility functions
+│   ├── mocks/              # Mock dataset for university queries & documents
+│   ├── pages/              # LandingPage, ChatPage, DocumentsPage, AnalyticsPage, etc.
+│   ├── services/           # API abstraction layer (Mock vs Real HTTP client)
+│   ├── store/              # Zustand stores (Auth, Theme, Chat)
+│   ├── types/              # Comprehensive TypeScript interfaces
+│   ├── App.tsx             # Root router configuration
+│   ├── index.css           # Tailwind v4 theme tokens & markdown styling
+│   └── main.tsx            # React application entry point
+├── .env.example            # Environment template
+├── tsconfig.json           # TypeScript configuration
+├── vite.config.ts          # Vite bundler configuration
+└── README.md
+```
+
+---
+
+## 🔌 Mock vs. Real Backend API Integration
+
+The application is architected so that **zero frontend UI components** need to change when connecting your Python / FastAPI RAG backend in Phase 2:
+
+1. Open `.env`
+2. Change `VITE_USE_MOCK` to `false`:
+   ```env
+   VITE_USE_MOCK=false
+   VITE_API_BASE_URL=http://localhost:8000/api/v1
+   ```
+3. All service calls in `src/services/api.ts` automatically switch to real HTTP REST requests with automatic JWT Bearer token injection.
+
+---
+
+## 📋 API Contract Specification (Phase 2 Backend)
+
+Your Phase 2 backend (e.g. FastAPI + LangChain/LlamaIndex) should implement the following endpoints:
+
+### Authentication
+- `POST /auth/login` → `{ email, password, role }` → Returns `{ user, token }`
+- `POST /auth/signup` → `{ name, email, password, role }` → Returns `{ user, token }`
+
+### Chat & Retrieval
+- `GET /chats` → Returns array of chat summaries.
+- `POST /chats` → Create new conversation.
+- `GET /chats/:id` → Retrieve conversation history with message citations.
+- `POST /chats/:id/query` →
+  ```json
+  {
+    "query": "What is the passing criteria for Semester 5 End Terms?",
+    "filters": {
+      "category": "Exam Rules",
+      "department": "Computer Science",
+      "semester": 5
+    }
   }
-  return http(`/chats/${chatId}/query`, { method: 'POST', body: JSON.stringify({ query, filters }) });
-}
-```
+  ```
+  Returns:
+  ```json
+  {
+    "userMessage": { "id": "msg-1", "content": "..." },
+    "assistantMessage": {
+      "id": "msg-2",
+      "content": "According to Section 4.2 of the Examination Regulations...",
+      "confidence": "high",
+      "citations": [
+        {
+          "id": "cit-1",
+          "documentName": "Exam_Regulations_2024.pdf",
+          "pageNumber": 14,
+          "relevanceScore": 96,
+          "snippet": "Students must secure a minimum of 40% in internal and external...",
+          "matchedText": "40% in internal and external"
+        }
+      ]
+    }
+  }
+  ```
+- `POST /feedback` → `{ messageId, value: "up" | "down" }`
+
+### Documents & Indexing
+- `GET /documents` → Query parameters: `search`, `category`, `department`, `page`, `pageSize`, `sortBy`, `sortDir`.
+- `POST /documents/upload` → `multipart/form-data` with `file`, `category`, `department`.
+- `POST /documents/:id/reindex` → Triggers embedding recalculation in vector store.
+- `DELETE /documents/:id` → Removes file and vectors.
+
+### Analytics
+- `GET /analytics` → Returns KPIs, query volume timelines, feedback distributions, and top/low confidence questions.
 
 ---
 
-## API Contract (Phase 2)
+## 📜 Contributing & License
 
-Base URL: `VITE_API_BASE_URL` (default `http://localhost:8000/api/v1`)
-Auth header: `Authorization: Bearer <JWT>` on all protected routes.
+This project was created for the 5th Semester University Capstone. Contributions, feature proposals, and pull requests are welcome.
 
----
-
-### POST /auth/login
-
-**Request:**
-```json
-{ "email": "string", "password": "string", "role": "student | admin" }
-```
-**Response 200:**
-```json
-{
-  "user": { "id": "string", "name": "string", "email": "string", "role": "student | admin",
-            "department": "string?", "semester": "number?", "createdAt": "ISO8601" },
-  "token": "string"
-}
-```
-
-### POST /auth/signup
-
-**Request:**
-```json
-{ "name": "string", "email": "string", "password": "string", "role": "student | admin" }
-```
-**Response 201:** Same shape as login response.
-
----
-
-### GET /chats
-
-**Response 200:**
-```json
-[{ "id": "string", "title": "string", "lastMessage": "string", "createdAt": "ISO8601", "updatedAt": "ISO8601" }]
-```
-
-### POST /chats
-
-**Response 201:**
-```json
-{ "id": "string", "title": "New Chat", "userId": "string", "messages": [], "createdAt": "ISO8601", "updatedAt": "ISO8601" }
-```
-
-### GET /chats/:id
-
-**Response 200:**
-```json
-{
-  "id": "string", "title": "string", "userId": "string",
-  "messages": [{
-    "id": "string", "chatId": "string", "role": "user | assistant",
-    "content": "string (markdown)",
-    "citations": [{
-      "id": "string", "documentId": "string", "documentName": "string",
-      "pageNumber": 12, "relevanceScore": 94, "snippet": "string", "matchedText": "string"
-    }],
-    "confidence": "high | medium | low",
-    "feedback": "up | down | null",
-    "timestamp": "ISO8601"
-  }],
-  "createdAt": "ISO8601", "updatedAt": "ISO8601"
-}
-```
-
-### POST /chats/:id/query
-
-**Request:**
-```json
-{ "query": "string", "filters": { "category": "string?", "department": "string?", "semester": "number?" } }
-```
-**Response 200:**
-```json
-{ "userMessage": { /* Message */ }, "assistantMessage": { /* Message with citations + confidence */ } }
-```
-
-> **Optional streaming:** `POST /chats/:id/query/stream` returning `text/event-stream` with `data: <chunk>` lines.
-
-### PATCH /chats/:id
-**Request:** `{ "title": "string" }` — **Response 204**
-
-### DELETE /chats/:id
-**Response 204**
-
----
-
-### GET /documents
-
-**Query params:** `search`, `category`, `department`, `status`, `page`, `pageSize`, `sortBy`, `sortDir`
-
-**Response 200:**
-```json
-{
-  "data": [{
-    "id": "string", "name": "BCA_Syllabus_2024.pdf", "category": "Syllabus",
-    "department": "Computer Science", "semester": 3, "uploadDate": "ISO8601",
-    "size": 2450000, "status": "uploaded | processing | indexed | failed",
-    "pageCount": 48, "uploadedBy": "string", "description": "string?"
-  }],
-  "total": 12, "page": 1, "pageSize": 10, "totalPages": 2
-}
-```
-
-### POST /documents/upload
-Multipart form: `file (File)`, `category (string)`, `department (string)`, `semester? (string)`
-
-**Response 201:** `{ "id": "string", "name": "string", "status": "uploaded" }`
-
-### DELETE /documents/:id — Response 204
-
-### POST /documents/:id/reindex — Response 202: `{ "message": "Re-index queued" }`
-
----
-
-### GET /analytics
-
-**Response 200:**
-```json
-{
-  "kpis": {
-    "totalQueries": 4821, "totalQueriesTrend": 12.4,
-    "activeUsers": 342, "activeUsersTrend": 8.1,
-    "documentsIndexed": 11, "documentsIndexedTrend": 10,
-    "avgResponseTime": 1.4, "avgResponseTimeTrend": -0.2,
-    "satisfactionRate": 87, "satisfactionRateTrend": 3.2
-  },
-  "queriesOverTime": [{ "date": "YYYY-MM-DD", "queries": 92, "uniqueUsers": 41 }],
-  "topCategories": [{ "category": "Exam Rules", "count": 1243 }],
-  "feedbackSplit": [{ "name": "Helpful", "value": 3842 }, { "name": "Not Helpful", "value": 541 }],
-  "topQuestions": [{ "id": "string", "question": "string", "count": 312, "category": "string", "avgConfidence": "high | medium | low" }],
-  "lowConfidenceQuestions": [{ "id": "string", "question": "string", "confidence": 28, "asked": 54, "lastAsked": "ISO8601" }]
-}
-```
-
----
-
-### POST /feedback
-
-**Request:** `{ "messageId": "string", "value": "up | down" }` — **Response 204**
-
----
-
-## TypeScript Types
-
-All types live in `src/types/index.ts`:
-
-| Type | Description |
-|---|---|
-| `User` | Authenticated user with role |
-| `Message` | Single chat message (user or assistant) |
-| `Citation` | Document source reference on assistant messages |
-| `Chat` | Full conversation with messages array |
-| `ChatSummary` | Lightweight sidebar list item |
-| `Document` | Uploaded university document |
-| `AnalyticsData` | Full analytics payload |
-| `QueryFilters` | Category / department / semester filters |
-| `AuthResponse` | `{ user, token }` from login/signup |
-
----
-
-## Design System
-
-- **Font:** Inter (loaded via Google Fonts in `index.html`)
-- **Tokens:** CSS variables in `index.css` — switched by `.dark` class on `<html>`
-- **Brand:** Indigo–Violet `#6366f1` → `#7c3aed`
-- **Theme:** Light / Dark / System — persisted in Zustand + localStorage
-- **Responsive:** Mobile-first; sidebar becomes a slide-in drawer below `lg` breakpoint
-
----
-
-## Phase 2 Checklist
-
-- [ ] Set `VITE_USE_MOCK=false`
-- [ ] Set `VITE_API_BASE_URL` to FastAPI server URL
-- [ ] Implement all endpoints in this API Contract
-- [ ] Use `Authorization: Bearer <JWT>` header
-- [ ] (Optional) Implement SSE streaming for chat
-- [ ] Wire up real document indexing status polling
+Distributed under the **MIT License**. See `LICENSE` for more information.
