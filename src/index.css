@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+/* ─── CSS Design Tokens: ChatGPT Black & White Theme ─────────────────────── */
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Brand monochrome palette */
+  --color-brand-50: #f7f7f8;
+  --color-brand-100: #ececec;
+  --color-brand-200: #e3e3e3;
+  --color-brand-300: #cdcdcd;
+  --color-brand-400: #9b9b9b;
+  --color-brand-500: #171717;
+  --color-brand-600: #0d0d0d;
+  --color-brand-700: #000000;
+  --color-brand-800: #1a1a1a;
+  --color-brand-900: #262626;
+  --color-brand-950: #0d0d0d;
+
+  /* Remap Indigo to ChatGPT neutrals so existing classes naturally adapt */
+  --color-indigo-50: #f4f4f4;
+  --color-indigo-100: #eaeaea;
+  --color-indigo-200: #dcdcdc;
+  --color-indigo-300: #b4b4b4;
+  --color-indigo-400: #737373;
+  --color-indigo-500: #171717;
+  --color-indigo-600: #0d0d0d;
+  --color-indigo-700: #000000;
+  --color-indigo-800: #262626;
+  --color-indigo-900: #1c1c1c;
+  --color-indigo-950: #141414;
+
+  /* Remap Violet to ChatGPT neutrals */
+  --color-violet-50: #f4f4f4;
+  --color-violet-100: #eaeaea;
+  --color-violet-200: #dcdcdc;
+  --color-violet-300: #b4b4b4;
+  --color-violet-400: #737373;
+  --color-violet-500: #212121;
+  --color-violet-600: #171717;
+  --color-violet-700: #0d0d0d;
+  --color-violet-800: #000000;
+  --color-violet-900: #1a1a1a;
+  --color-violet-950: #0a0a0a;
+
+  /* Radius (ChatGPT subtle rounded corners) */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+
+/* ─── Light Mode (ChatGPT White / Off-White) ──────────────────────────────── */
+:root {
+  color-scheme: light;
+  --bg-app: #ffffff;
+  --bg-surface: #f9f9f9;
+  --bg-elevated: #ffffff;
+  --bg-muted: #f4f4f4;
+  --bg-subtle: #eaeaea;
+  --border-color: #e5e5e5;
+  --border-muted: #efefef;
+  --text-primary: #0d0d0d;
+  --text-secondary: #5d5d5d;
+  --text-muted: #8e8e8e;
+  --text-placeholder: #b4b4b4;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.09), 0 8px 10px -6px rgb(0 0 0 / 0.09);
+}
+
+/* ─── Dark Mode (ChatGPT #212121 / Charcoal) ─────────────────────────────── */
+.dark {
+  color-scheme: dark;
+  --bg-app: #212121;
+  --bg-surface: #171717;
+  --bg-elevated: #2f2f2f;
+  --bg-muted: #2a2a2a;
+  --bg-subtle: #383838;
+  --border-color: #303030;
+  --border-muted: #282828;
+  --text-primary: #ececec;
+  --text-secondary: #b4b4b4;
+  --text-muted: #737373;
+  --text-placeholder: #525252;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.55), 0 8px 10px -6px rgb(0 0 0 / 0.55);
+}
+
+/* ─── Reset + Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* ─── Prose / Markdown ───────────────────────────────────────────────────── */
+.prose {
+  color: var(--text-primary);
+  line-height: 1.75;
+  font-size: 0.9375rem;
+}
+.prose h1, .prose h2, .prose h3 { font-weight: 700; color: var(--text-primary); margin-top: 1.25em; margin-bottom: 0.5em; }
+.prose h2 { font-size: 1.15rem; }
+.prose h3 { font-size: 1rem; }
+.prose p { margin-top: 0; margin-bottom: 0.875em; }
+.prose ul, .prose ol { padding-left: 1.4em; margin-bottom: 0.875em; }
+.prose li { margin-bottom: 0.25em; }
+.prose strong { font-weight: 600; color: var(--text-primary); }
+.prose code {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.85em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.prose pre {
+  background: #171717;
+  color: #ececec;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0.875em 0;
+}
+.prose pre code { background: none; border: none; padding: 0; font-size: 0.875rem; color: inherit; }
+.prose blockquote {
+  border-left: 3px solid var(--text-primary);
+  padding-left: 1em;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0.875em 0;
+}
+.prose table { width: 100%; border-collapse: collapse; margin: 0.875em 0; font-size: 0.875rem; }
+.prose th {
+  background: var(--bg-muted);
+  text-align: left;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+}
+.prose td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+}
+.prose a { color: var(--text-primary); text-decoration: underline; font-weight: 500; }
+.prose a:hover { opacity: 0.8; }
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-subtle) 50%, var(--bg-muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.2s ease forwards; }
+
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typing-cursor::after {
+  content: '▋';
+  display: inline-block;
+  animation: typing-cursor 0.8s infinite;
+  color: var(--text-primary);
+  margin-left: 1px;
+}
