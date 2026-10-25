@@ -78,8 +78,8 @@ export function SignupPage() {
               className={cn(
                 'flex items-center gap-2.5 rounded-xl border p-3 transition-all duration-150',
                 selectedRole === value
-                  ? 'border-neutral-900 bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-800'
-                  : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)]',
+                  ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)] ring-1 ring-[var(--text-primary)] shadow-sm'
+                  : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)] opacity-80 hover:opacity-100',
               )}
             >
               <Icon className={cn('h-4 w-4', selectedRole === value ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]')} />

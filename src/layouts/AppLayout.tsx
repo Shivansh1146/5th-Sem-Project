@@ -14,6 +14,7 @@ import {
   Moon,
   Monitor,
   ChevronDown,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuthStore, useThemeStore } from '../store';
 import { ROUTES } from '../lib/constants';
@@ -28,7 +29,7 @@ const NAV_ITEMS = [
 ];
 
 function Sidebar({ onClose }: { onClose?: () => void }) {
-  const { user, logout } = useAuthStore();
+  const { user, logout, switchRole } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
   const navigate = useNavigate();
 
@@ -37,6 +38,13 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
   const handleLogout = () => {
     logout();
     navigate(ROUTES.LOGIN);
+  };
+
+  const handleRoleSwitch = (targetRole: 'student' | 'admin') => {
+    switchRole(targetRole);
+    if (targetRole === 'student' && (location.pathname.includes('/analytics') || location.pathname.includes('/documents'))) {
+      navigate(ROUTES.CHAT);
+    }
   };
 
   const themeOptions = [
@@ -141,6 +149,23 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
               sideOffset={4}
               className="z-50 w-52 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] p-1 shadow-[var(--shadow-xl)]"
             >
+              <DropdownMenu.Item
+                onSelect={() => handleRoleSwitch(user?.role === 'admin' ? 'student' : 'admin')}
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] cursor-pointer outline-none hover:bg-[var(--bg-muted)] transition-colors font-medium"
+              >
+                {user?.role === 'admin' ? (
+                  <>
+                    <GraduationCap className="h-4 w-4 text-[var(--text-primary)]" />
+                    <span>Switch to Student Portal</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="h-4 w-4 text-[var(--text-primary)]" />
+                    <span>Switch to Admin Portal</span>
+                  </>
+                )}
+              </DropdownMenu.Item>
+              <DropdownMenu.Separator className="my-1 h-px bg-[var(--border-color)]" />
               <DropdownMenu.Item
                 onSelect={() => navigate(ROUTES.SETTINGS)}
                 className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] cursor-pointer outline-none hover:bg-[var(--bg-muted)] transition-colors"

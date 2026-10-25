@@ -173,9 +173,13 @@ The application includes built-in role simulation. On the **Login** and **Sign U
 | Role | Access Level | Available Routes |
 |---|---|---|
 | **Student** | Academic query access, citation reading, feedback | `/`, `/chat`, `/chat/:id`, `/settings` |
-| **Admin** | Full student capabilities + document indexing & system analytics | `/`, `/chat`, `/chat/:id`, `/settings`, `/admin/documents`, `/admin/analytics` |
+| **Admin** | Full student capabilities + document indexing & system analytics | `/`, `/chat`, `/chat/:id`, `/settings`, `/admin/documents` (or `/documents`), `/admin/analytics` (or `/analytics`) |
 
-> *Note: In mock mode, entering any valid format email/password will authenticate successfully with the selected role.*
+### Session & Theme Isolation
+* **Independent Sessions:** Student and Admin accounts maintain completely isolated state and authentication in Zustand.
+* **Independent Themes:** Switching between Light and Dark mode in the Student portal does not affect the Admin portal's theme.
+* **1-Click Portal Switcher:** Easily toggle between Student and Admin environments via the sidebar user dropdown or in Settings.
+* **Route Protection & Fallback:** Attempting to access an Admin route as a student displays an **Admin Access Required** security screen with an instant 1-click switch button.
 
 ---
 
@@ -205,8 +209,18 @@ The application includes built-in role simulation. On the **Login** and **Sign U
 ├── .env.example            # Environment template
 ├── tsconfig.json           # TypeScript configuration
 ├── vite.config.ts          # Vite bundler configuration
+├── AcadIQ_Project_Presentation.pptx  # 16:9 PowerPoint Presentation Deck
+├── PROJECT_MASTER_DETAILS_FOR_PPT.md # Master A-to-Z Technical Dossier
 └── README.md
 ```
+
+---
+
+## 🎯 Presentation & Viva Resources
+
+* **PowerPoint Deck:** [`AcadIQ_Project_Presentation.pptx`](file:///c:/Users/shivansh/Desktop/5th%20Sem%20project/AcadIQ_Project_Presentation.pptx) — A 10-slide 16:9 widescreen presentation deck styled with the ChatGPT dark aesthetic.
+* **Claude / Presentation AI Master Dossier:** [`PROJECT_MASTER_DETAILS_FOR_PPT.md`](file:///c:/Users/shivansh/Desktop/5th%20Sem%20project/PROJECT_MASTER_DETAILS_FOR_PPT.md) — Comprehensive A-to-Z technical documentation and prompt ready to copy-paste into Claude for generating customized slide decks and reports.
+
 
 ---
 

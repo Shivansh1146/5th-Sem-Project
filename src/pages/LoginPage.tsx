@@ -79,8 +79,8 @@ export function LoginPage() {
                 className={cn(
                   'flex flex-col items-start gap-1 rounded-xl border p-3.5 text-left transition-all duration-150',
                   selectedRole === value
-                    ? 'border-neutral-900 bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-800'
-                    : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)]',
+                    ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)] ring-1 ring-[var(--text-primary)] shadow-sm'
+                    : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)] opacity-80 hover:opacity-100',
                 )}
               >
                 <Icon className={cn('h-5 w-5', selectedRole === value ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]')} />

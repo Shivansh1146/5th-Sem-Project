@@ -68,7 +68,7 @@ function App() {
                   <Route path="/chat/:id" element={<ChatPage />} />
                   <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
 
-                  {/* Admin-only routes */}
+                  {/* Documents & Analytics (accessible via /admin/... and clean /... routes) */}
                   <Route
                     path={ROUTES.DOCUMENTS}
                     element={
@@ -78,7 +78,23 @@ function App() {
                     }
                   />
                   <Route
+                    path="/documents"
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <DocumentsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
                     path={ROUTES.ANALYTICS}
+                    element={
+                      <ProtectedRoute requiredRole="admin">
+                        <AnalyticsPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/analytics"
                     element={
                       <ProtectedRoute requiredRole="admin">
                         <AnalyticsPage />

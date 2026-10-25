@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Sun, Moon, Monitor, Trash2, User, Bell, Shield, ChevronRight } from 'lucide-react';
+import { Sun, Moon, Monitor, Trash2, User, Bell, Shield, ChevronRight, GraduationCap, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuthStore, useThemeStore } from '../store';
 import { Input } from '../components/ui/Input';
@@ -39,13 +39,13 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
 }
 
 export function SettingsPage() {
-  const { user, updateUser, logout } = useAuthStore();
+  const { user, updateUser, logout, switchRole } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
   const { toast } = useToast();
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
   const [notifications, setNotifications] = useState(true);
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileData>({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name ?? '',
@@ -53,6 +53,16 @@ export function SettingsPage() {
       department: user?.department ?? '',
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.name,
+        email: user.email,
+        department: user.department ?? '',
+      });
+    }
+  }, [user, reset]);
 
   const onSave = async (data: ProfileData) => {
     await new Promise((r) => setTimeout(r, 800));
@@ -73,6 +83,44 @@ export function SettingsPage() {
       </div>
 
       <div className="max-w-2xl space-y-5">
+        {/* Environment session info */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-[var(--bg-muted)] border border-[var(--border-color)] flex items-center justify-center flex-shrink-0">
+              {user?.role === 'admin' ? (
+                <ShieldCheck className="h-5 w-5 text-[var(--text-primary)]" />
+              ) : (
+                <GraduationCap className="h-5 w-5 text-[var(--text-primary)]" />
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">
+                  {user?.role === 'admin' ? 'Admin Portal Session' : 'Student Portal Session'}
+                </p>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--bg-muted)] text-[var(--text-muted)] border border-[var(--border-color)]">
+                  Isolated
+                </span>
+              </div>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Each role maintains an independent session, profile, and theme preference.
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const target = user?.role === 'admin' ? 'student' : 'admin';
+              switchRole(target);
+              toast(`Switched to ${target === 'admin' ? 'Admin' : 'Student'} Portal`, 'info');
+            }}
+            className="flex-shrink-0"
+          >
+            {user?.role === 'admin' ? 'Switch to Student' : 'Switch to Admin'}
+          </Button>
+        </div>
+
         {/* Profile */}
         <Section title="Profile Information" icon={User}>
           <div className="flex items-center gap-4 mb-5">
@@ -125,16 +173,16 @@ export function SettingsPage() {
                 className={cn(
                   'flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-all duration-150',
                   theme === value
-                    ? 'border-neutral-900 bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-800'
-                    : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)]',
+                    ? 'border-[var(--text-primary)] bg-[var(--bg-subtle)] ring-1 ring-[var(--text-primary)] shadow-sm'
+                    : 'border-[var(--border-color)] hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-[var(--bg-muted)] opacity-80 hover:opacity-100',
                 )}
                 aria-pressed={theme === value}
                 aria-label={`${label} theme`}
               >
                 <Icon className={cn('h-5 w-5', theme === value ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]')} />
                 <div>
-                  <p className="text-sm font-medium text-[var(--text-primary)]">{label}</p>
-                  <p className="text-[10px] text-[var(--text-muted)] mt-0.5 leading-tight">{desc}</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{label}</p>
+                  <p className="text-[10px] text-[var(--text-secondary)] mt-0.5 leading-tight">{desc}</p>
                 </div>
               </button>
             ))}
